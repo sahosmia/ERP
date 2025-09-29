@@ -53,4 +53,25 @@ class Supplier extends Model
     {
         return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
     }
+
+    /**
+     * The "booted" method of the model.
+     * This will automatically populate user tracking fields.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (auth()->check()) {
+                $model->added_by = auth()->id();
+            }
+        });
+
+        static::updating(function ($model) {
+            if (auth()->check()) {
+                $model->updated_by = auth()->id();
+            }
+        });
+    }
 }
