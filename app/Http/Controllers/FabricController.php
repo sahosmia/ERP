@@ -7,6 +7,7 @@ use App\Models\Supplier;
 use App\Http\Requests\StoreFabricRequest;
 use App\Http\Requests\UpdateFabricRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class FabricController extends Controller
@@ -45,7 +46,7 @@ class FabricController extends Controller
 
         Fabric::create($data);
 
-        return redirect()->route('fabrics.index')->with('success', 'Fabric created successfully.');
+        return redirect()->route('admin.fabrics.index')->with('success', 'Fabric created successfully.');
     }
 
     /**
@@ -84,7 +85,7 @@ class FabricController extends Controller
 
         $fabric->update($data);
 
-        return redirect()->route('fabrics.index')->with('success', 'Fabric updated successfully.');
+        return redirect()->route('admin.fabrics.index')->with('success', 'Fabric updated successfully.');
     }
 
     /**
@@ -93,6 +94,39 @@ class FabricController extends Controller
     public function destroy(Fabric $fabric)
     {
         $fabric->delete();
-        return redirect()->route('fabrics.index')->with('success', 'Fabric deleted successfully.');
+        return redirect()->route('admin.fabrics.index')->with('success', 'Fabric moved to trash successfully.');
+    }
+
+    /**
+     * Display a listing of the trashed resource.
+     */
+    public function trash()
+    {
+        $trashedFabrics = Fabric::onlyTrashed()->with('supplier')->paginate(10);
+        return view('fabrics.trash', compact('trashedFabrics'));
+    }
+
+    /**
+     * Restore the specified resource from trash.
+     */
+    public function restore($id)
+    {
+        $fabric = Fabric::onlyTrashed()->findOrFail($id);
+        $fabric->restore();
+        return redirect()->route('admin.fabrics.trash')->with('success', 'Fabric restored successfully.');
+    }
+
+    /**
+     * Permanently delete the specified resource from storage.
+     */
+    public function forceDelete($id)
+    {
+        $fabric = Fabric::onlyTrashed()->findOrFail($id);
+        // Optional: Delete image from storage
+        if ($fabric->image_path) {
+            Storage::disk('public')->delete($fabric->image_path);
+        }
+        $fabric->forceDelete();
+        return redirect()->route('admin.fabrics.trash')->with('success', 'Fabric permanently deleted.');
     }
 }

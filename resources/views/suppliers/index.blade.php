@@ -9,9 +9,13 @@
 @section('content')
     <div class="w-full">
         <div class="flex justify-between items-center mb-4">
-            <a href="{{ route('suppliers.create') }}"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add Supplier</a>
-            <form method="GET" action="{{ route('suppliers.index') }}" class="flex">
+            <div>
+                <a href="{{ route('admin.suppliers.create') }}"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add Supplier</a>
+                <a href="{{ route('admin.suppliers.trash') }}"
+                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">View Trash</a>
+            </div>
+            <form method="GET" action="{{ route('admin.suppliers.index') }}" class="flex">
                 <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}"
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                 <button type="submit"
@@ -51,17 +55,17 @@
                             </td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
-                                    <a href="{{ route('suppliers.show', $supplier) }}"
+                                    <a href="{{ route('admin.suppliers.show', $supplier) }}"
                                         class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center mr-2 transform hover:scale-110">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('suppliers.edit', $supplier) }}"
+                                    <a href="{{ route('admin.suppliers.edit', $supplier) }}"
                                         class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center mr-2 transform hover:scale-110">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
-                                    <form action="{{ route('suppliers.destroy', $supplier) }}" method="POST"
+                                    <form action="{{ route('admin.suppliers.destroy', $supplier) }}" method="POST"
                                         class="inline-block"
-                                        onsubmit="return confirm('Are you sure you want to delete this supplier?');">
+                                        onsubmit="return confirm('Are you sure you want to move this supplier to trash?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

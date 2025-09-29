@@ -9,7 +9,9 @@
     <title>@yield('title', config('app.name', 'Laravel') . ' | Admin')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
 
     <style>
         .sidebar-transition {
@@ -51,12 +53,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('sidebar');
             const toggleButton = document.getElementById('sidebar-toggle');
+            const mainContent = document.getElementById('main-content');
 
             toggleButton.addEventListener('click', () => {
                 sidebar.classList.toggle('w-64');
                 sidebar.classList.toggle('w-20');
 
-                // Optional: text hide/show
                 sidebar.querySelectorAll('span').forEach(span => {
                     span.classList.toggle('hidden');
                 });

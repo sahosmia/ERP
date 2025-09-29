@@ -21,7 +21,7 @@
         @endif
 
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <form action="{{ route('fabrics.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.fabrics.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="mb-4">
@@ -104,7 +104,7 @@
                         type="submit">
                         Save
                     </button>
-                    <a href="{{ route('fabrics.index') }}"
+                    <a href="{{ route('admin.fabrics.index') }}"
                         class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
                         Cancel
                     </a>

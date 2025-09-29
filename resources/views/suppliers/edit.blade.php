@@ -21,7 +21,7 @@
         @endif
 
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <form action="{{ route('suppliers.update', $supplier) }}" method="POST">
+            <form action="{{ route('admin.suppliers.update', $supplier) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -108,7 +108,7 @@
                         type="submit">
                         Update
                     </button>
-                    <a href="{{ route('suppliers.index') }}"
+                    <a href="{{ route('admin.suppliers.index') }}"
                         class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
                         Cancel
                     </a>

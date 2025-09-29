@@ -8,9 +8,13 @@
 
 @section('content')
     <div class="w-full">
-        <a href="{{ route('fabrics.create') }}"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">Add
-            Fabric</a>
+        <div class="flex justify-between items-center mb-4">
+            <a href="{{ route('admin.fabrics.create') }}"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add
+                Fabric</a>
+            <a href="{{ route('admin.fabrics.trash') }}"
+                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">View Trash</a>
+        </div>
 
         <div class="bg-white shadow-md rounded my-6">
             <table class="min-w-max w-full table-auto">
@@ -45,21 +49,21 @@
                             </td>
                             <td class="py-3 px-6 text-center">
                                 <div class="flex item-center justify-center">
-                                    <a href="{{ route('fabrics.show', $fabric) }}"
+                                    <a href="{{ route('admin.fabrics.show', $fabric) }}"
                                         class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center mr-2 transform hover:scale-110">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('fabrics.edit', $fabric) }}"
+                                    <a href="{{ route('admin.fabrics.edit', $fabric) }}"
                                         class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center mr-2 transform hover:scale-110">
                                         <i class="fas fa-pencil-alt"></i>
                                     </a>
-                                    <form action="{{ route('fabrics.destroy', $fabric) }}" method="POST"
-                                        class="inline-block">
+                                    <form action="{{ route('admin.fabrics.destroy', $fabric) }}" method="POST"
+                                        class="inline-block"
+                                        onsubmit="return confirm('Are you sure you want to move this fabric to trash?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center transform hover:scale-110"
-                                            onclick="return confirm('Are you sure you want to delete this fabric?');">
+                                            class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center transform hover:scale-110">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
