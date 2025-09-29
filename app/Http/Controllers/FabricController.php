@@ -17,9 +17,9 @@ class FabricController extends Controller
         $this->fabricService = $fabricService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $fabrics = $this->fabricService->getAllFabrics();
+        $fabrics = $this->fabricService->getAllFabrics($request);
         return view('fabrics.index', compact('fabrics'));
     }
 

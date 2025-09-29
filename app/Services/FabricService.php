@@ -16,9 +16,9 @@ class FabricService
         $this->fabricRepository = $fabricRepository;
     }
 
-    public function getAllFabrics()
+    public function getAllFabrics($request)
     {
-        return $this->fabricRepository->getAll();
+        return $this->fabricRepository->getAll($request);
     }
 
     public function createFabric(array $data, $imageFile = null)
