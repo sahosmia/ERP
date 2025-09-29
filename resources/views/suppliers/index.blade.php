@@ -15,12 +15,53 @@
             <a href="{{ route('admin.suppliers.trash') }}"
                 class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">View Trash</a>
         </div>
-        <form method="GET" action="{{ route('admin.suppliers.index') }}" class="flex">
-            <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            <button type="submit"
-                class="ml-2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Search</button>
-        </form>
+        <details class="bg-white shadow rounded-lg mb-4">
+            <summary class="font-semibold p-4 cursor-pointer">Advanced Search</summary>
+            <div class="p-4 border-t">
+                <form method="GET" action="{{ route('admin.suppliers.index') }}" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label for="company_name" class="block text-sm font-medium text-gray-700">Company
+                                Name</label>
+                            <input type="text" name="company_name" id="company_name"
+                                value="{{ request('company_name') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        </div>
+                        <div>
+                            <label for="representative" class="block text-sm font-medium text-gray-700">Representative</label>
+                            <input type="text" name="representative" id="representative"
+                                value="{{ request('representative') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        </div>
+                        <div>
+                            <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+                            <input type="text" name="country" id="country" value="{{ request('country') }}"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        </div>
+                        <div>
+                            <label for="start_date" class="block text-sm font-medium text-gray-700">Date Range</label>
+                            <div class="flex space-x-2">
+                                <input type="date" name="start_date" id="start_date"
+                                    value="{{ request('start_date') }}"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                <input type="date" name="end_date" id="end_date" value="{{ request('end_date') }}"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-2">
+                        <button type="submit"
+                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Search
+                        </button>
+                        <a href="{{ route('admin.suppliers.index') }}"
+                            class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Clear
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </details>
     </div>
 
     <div class="bg-white shadow-md rounded my-6">

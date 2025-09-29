@@ -11,15 +11,16 @@ class SupplierRepository
     {
         $query = Supplier::query();
 
-        if ($request->has('search')) {
-            $searchTerm = $request->input('search');
-            $query->where('company_name', 'like', "%{$searchTerm}%")
-                  ->orWhere('country', 'like', "%{$searchTerm}%")
-                  ->orWhere('representative_name', 'like', "%{$searchTerm}%");
+        if ($request->filled('company_name')) {
+            $query->where('company_name', 'like', '%' . $request->input('company_name') . '%');
         }
 
-        if ($request->has('country')) {
-            $query->where('country', $request->input('country'));
+        if ($request->filled('representative')) {
+            $query->where('representative_name', 'like', '%' . $request->input('representative') . '%');
+        }
+
+        if ($request->filled('country')) {
+            $query->where('country', 'like', '%' . $request->input('country') . '%');
         }
 
         if ($request->has('start_date') && $request->has('end_date')) {

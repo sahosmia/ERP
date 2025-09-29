@@ -9,12 +9,66 @@
 @section('content')
 <div class="w-full">
     <div class="flex justify-between items-center mb-4">
-        <a href="{{ route('admin.fabrics.create') }}"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add
-            Fabric</a>
-        <a href="{{ route('admin.fabrics.trash') }}"
-            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">View Trash</a>
+        <div>
+            <a href="{{ route('admin.fabrics.create') }}"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add
+                Fabric</a>
+            <a href="{{ route('admin.fabrics.trash') }}"
+                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">View Trash</a>
+        </div>
     </div>
+
+    <details class="bg-white shadow rounded-lg mb-4">
+        <summary class="font-semibold p-4 cursor-pointer">Advanced Search</summary>
+        <div class="p-4 border-t">
+            <form method="GET" action="{{ route('admin.fabrics.index') }}" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                        <label for="company_name" class="block text-sm font-medium text-gray-700">Company/Factory
+                            Name</label>
+                        <input type="text" name="company_name" id="company_name"
+                            value="{{ request('company_name') }}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="fabric_no" class="block text-sm font-medium text-gray-700">Fabric No</label>
+                        <input type="text" name="fabric_no" id="fabric_no" value="{{ request('fabric_no') }}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="composition" class="block text-sm font-medium text-gray-700">Composition</label>
+                        <input type="text" name="composition" id="composition"
+                            value="{{ request('composition') }}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="production_type"
+                            class="block text-sm font-medium text-gray-700">Production Type</label>
+                        <select name="production_type" id="production_type"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <option value="">All</option>
+                            <option value="knitted" {{ request('production_type') == 'knitted' ? 'selected' : '' }}>
+                                Knitted</option>
+                            <option value="woven" {{ request('production_type') == 'woven' ? 'selected' : '' }}>
+                                Woven</option>
+                            <option value="non_woven" {{ request('production_type') == 'non_woven' ? 'selected' : '' }}>
+                                Non-Woven</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="submit"
+                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Search
+                    </button>
+                    <a href="{{ route('admin.fabrics.index') }}"
+                        class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </details>
 
     <div class="bg-white shadow-md rounded my-6">
         <table class="min-w-max w-full table-auto">
@@ -24,6 +78,7 @@
                     <th class="py-3 px-6 text-left">Composition</th>
                     <th class="py-3 px-6 text-center">GSM</th>
                     <th class="py-3 px-6 text-center">Supplier</th>
+                    <th class="py-3 px-6 text-center">Stock Balance</th>
                     <th class="py-3 px-6 text-center">Actions</th>
                 </tr>
             </thead>
@@ -46,6 +101,9 @@
                     <td class="py-3 px-6 text-center">
                         <span class="bg-purple-200 text-purple-600 py-1 px-3 rounded-full text-xs">{{
                             $fabric->supplier->company_name ?? 'N/A' }}</span>
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        <span>{{ ($fabric->stock_in ?? 0) - ($fabric->stock_out ?? 0) }}</span>
                     </td>
                     <td class="py-3 px-6 text-center">
                         <div class="flex item-center justify-center">
