@@ -53,7 +53,7 @@ class SupplierController extends Controller
         $supplier->added_by = Auth::id();
         $supplier->save();
 
-        return redirect()->route('suppliers.index')->with('success', 'Supplier created successfully.');
+        return redirect()->route('admin.suppliers.index')->with('success', 'Supplier created successfully.');
     }
 
     /**
@@ -81,7 +81,7 @@ class SupplierController extends Controller
         $supplier->updated_by = Auth::id();
         $supplier->save();
 
-        return redirect()->route('suppliers.index')->with('success', 'Supplier updated successfully.');
+        return redirect()->route('admin.suppliers.index')->with('success', 'Supplier updated successfully.');
     }
 
     /**
@@ -90,6 +90,35 @@ class SupplierController extends Controller
     public function destroy(Supplier $supplier)
     {
         $supplier->delete();
-        return redirect()->route('suppliers.index')->with('success', 'Supplier deleted successfully.');
+        return redirect()->route('admin.suppliers.index')->with('success', 'Supplier moved to trash successfully.');
+    }
+
+    /**
+     * Display a listing of the trashed resource.
+     */
+    public function trash()
+    {
+        $trashedSuppliers = Supplier::onlyTrashed()->paginate(10);
+        return view('suppliers.trash', compact('trashedSuppliers'));
+    }
+
+    /**
+     * Restore the specified resource from trash.
+     */
+    public function restore($id)
+    {
+        $supplier = Supplier::onlyTrashed()->findOrFail($id);
+        $supplier->restore();
+        return redirect()->route('admin.suppliers.trash')->with('success', 'Supplier restored successfully.');
+    }
+
+    /**
+     * Permanently delete the specified resource from storage.
+     */
+    public function forceDelete($id)
+    {
+        $supplier = Supplier::onlyTrashed()->findOrFail($id);
+        $supplier->forceDelete();
+        return redirect()->route('admin.suppliers.trash')->with('success', 'Supplier permanently deleted.');
     }
 }
