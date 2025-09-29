@@ -1,44 +1,115 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Fabric</title>
-</head>
-<body>
-    <h1>Add Fabric</h1>
+@extends('layouts.admin')
 
-    @if ($errors->any())
-        <div>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+@section('title', 'Add Fabric')
+
+@section('header')
+    <h1 class="text-2xl font-semibold">Add Fabric</h1>
+@endsection
+
+@section('content')
+    <div class="w-full">
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Whoops!</strong>
+                <span class="block sm:inline">There were some problems with your input.</span>
+                <ul class="mt-3 list-disc list-inside text-sm text-red-600">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form action="{{ route('fabrics.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="fabric_no">
+                            Fabric No
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="fabric_no" name="fabric_no" type="text" placeholder="Fabric No" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="composition">
+                            Composition
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="composition" name="composition" type="text" placeholder="Composition" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="gsm">
+                            GSM
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="gsm" name="gsm" type="text" placeholder="GSM" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="qty">
+                            QTY
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="qty" name="qty" type="number" step="0.01" placeholder="QTY" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="cuttable_width">
+                            Cuttable Width
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="cuttable_width" name="cuttable_width" type="text" placeholder="Cuttable Width"
+                            required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="production_type">
+                            Production Type
+                        </label>
+                        <select
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="production_type" name="production_type" required>
+                            <option value="Sample Yardage">Sample Yardage</option>
+                            <option value="SMS">SMS</option>
+                            <option value="Bulk">Bulk</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="supplier_id">
+                            Supplier
+                        </label>
+                        <select
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="supplier_id" name="supplier_id" required>
+                            @foreach ($suppliers as $supplier)
+                                <option value="{{ $supplier->id }}">{{ $supplier->company_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                            Fabric Image
+                        </label>
+                        <input
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="image" name="image" type="file">
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mt-6">
+                    <button
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        type="submit">
+                        Save
+                    </button>
+                    <a href="{{ route('fabrics.index') }}"
+                        class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                        Cancel
+                    </a>
+                </div>
+            </form>
         </div>
-    @endif
-
-    <form action="{{ route('fabrics.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <label>Fabric No: <input type="text" name="fabric_no" required></label><br>
-        <label>Composition: <input type="text" name="composition" required></label><br>
-        <label>GSM: <input type="text" name="gsm" required></label><br>
-        <label>QTY: <input type="number" step="0.01" name="qty" required></label><br>
-        <label>Cuttable Width: <input type="text" name="cuttable_width" required></label><br>
-        <label>Production Type:
-            <select name="production_type" required>
-                <option value="Sample Yardage">Sample Yardage</option>
-                <option value="SMS">SMS</option>
-                <option value="Bulk">Bulk</option>
-            </select>
-        </label><br>
-        <label>Supplier:
-            <select name="supplier_id" required>
-                @foreach ($suppliers as $supplier)
-                    <option value="{{ $supplier->id }}">{{ $supplier->company_name }}</option>
-                @endforeach
-            </select>
-        </label><br>
-        <label>Fabric Image: <input type="file" name="image"></label><br>
-        <button type="submit">Save</button>
-    </form>
-</body>
-</html>
+    </div>
+@endsection
