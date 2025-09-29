@@ -45,4 +45,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function suppliers()
+    {
+        return $this->hasMany(Supplier::class, 'added_by');
+    }
+
+    public function fabrics()
+    {
+        return $this->hasMany(Fabric::class, 'added_by');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class, 'added_by');
+    }
 }
