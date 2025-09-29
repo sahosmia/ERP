@@ -37,7 +37,7 @@ class UpdateFabricRequest extends FormRequest
             'cuttable_width' => 'required|string|max:255',
             'production_type' => 'required|in:Sample Yardage,SMS,Bulk',
             'supplier_id' => 'required|exists:suppliers,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|max:2048',
         ];
     }
 }
