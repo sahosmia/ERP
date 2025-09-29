@@ -6,119 +6,71 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreSupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Services\SupplierService;
 
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $supplierService;
+
+    public function __construct(SupplierService $supplierService)
+    {
+        $this->supplierService = $supplierService;
+    }
+
     public function index(Request $request)
     {
-        $query = Supplier::query();
-
-        if ($request->has('search')) {
-            $searchTerm = $request->input('search');
-            $query->where('company_name', 'like', "%{$searchTerm}%")
-                  ->orWhere('country', 'like', "%{$searchTerm}%")
-                  ->orWhere('representative_name', 'like', "%{$searchTerm}%");
-        }
-
-        if ($request->has('country')) {
-            $query->where('country', $request->input('country'));
-        }
-
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('created_at', [$request->input('start_date'), $request->input('end_date')]);
-        }
-
-        $suppliers = $query->paginate(10);
+        $suppliers = $this->supplierService->getSuppliers($request);
         return view('suppliers.index', compact('suppliers'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('suppliers.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreSupplierRequest $request)
     {
-        $supplier = new Supplier($request->validated());
-        $supplier->added_by = Auth::id();
-        $supplier->save();
-
+        $this->supplierService->createSupplier($request->validated());
         return redirect()->route('admin.suppliers.index')->with('success', 'Supplier created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Supplier $supplier)
     {
         return view('suppliers.show', compact('supplier'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Supplier $supplier)
     {
         return view('suppliers.edit', compact('supplier'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateSupplierRequest $request, Supplier $supplier)
     {
-        $supplier->fill($request->validated());
-        $supplier->updated_by = Auth::id();
-        $supplier->save();
-
+        $this->supplierService->updateSupplier($supplier, $request->validated());
         return redirect()->route('admin.suppliers.index')->with('success', 'Supplier updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Supplier $supplier)
     {
-        $supplier->delete();
+        $this->supplierService->deleteSupplier($supplier);
         return redirect()->route('admin.suppliers.index')->with('success', 'Supplier moved to trash successfully.');
     }
 
-    /**
-     * Display a listing of the trashed resource.
-     */
     public function trash()
     {
-        $trashedSuppliers = Supplier::onlyTrashed()->paginate(10);
+        $trashedSuppliers = $this->supplierService->getTrashedSuppliers();
         return view('suppliers.trash', compact('trashedSuppliers'));
     }
 
-    /**
-     * Restore the specified resource from trash.
-     */
     public function restore($id)
     {
-        $supplier = Supplier::onlyTrashed()->findOrFail($id);
-        $supplier->restore();
+        $this->supplierService->restoreSupplier($id);
         return redirect()->route('admin.suppliers.trash')->with('success', 'Supplier restored successfully.');
     }
 
-    /**
-     * Permanently delete the specified resource from storage.
-     */
     public function forceDelete($id)
     {
-        $supplier = Supplier::onlyTrashed()->findOrFail($id);
-        $supplier->forceDelete();
+        $this->supplierService->forceDeleteSupplier($id);
         return redirect()->route('admin.suppliers.trash')->with('success', 'Supplier permanently deleted.');
     }
 }

@@ -59,4 +59,27 @@ class Fabric extends Model
     {
         return $this->morphMany(Note::class, 'notable');
     }
+
+    public function getFabricNoAttribute($value)
+    {
+        return strtoupper($value);
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return \Carbon\Carbon::parse($value)->format('d-m-Y H:i:s');
+    }
+
+    public function getBalanceAttribute()
+    {
+        if (!function_exists('App\Helpers\calculateFabricBalance')) {
+            require_once app_path('Helpers/FabricHelper.php');
+        }
+        return \App\Helpers\calculateFabricBalance($this->id);
+    }
 }
