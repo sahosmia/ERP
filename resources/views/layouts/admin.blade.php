@@ -26,13 +26,13 @@
 <body class="bg-gray-100 min-h-screen flex">
 
     {{-- Sidebar --}}
-    @include('admin.partials.sidebar')
+    @include('layouts.partials.sidebar')
 
     {{-- Main Content --}}
     <div id="main-content" class="flex-1 flex flex-col min-h-screen">
 
         {{-- Header --}}
-        @include('admin.partials.header')
+        @include('layouts.partials.header')
 
         {{-- Page Header --}}
         <header class="bg-white shadow-sm">
