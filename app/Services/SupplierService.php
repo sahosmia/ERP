@@ -15,7 +15,7 @@ class SupplierService
         $this->supplierRepository = $supplierRepository;
     }
 
-    public function getSuppliers(Request $request)
+    public function getSuppliers($request)
     {
         return $this->supplierRepository->getAll($request);
     }

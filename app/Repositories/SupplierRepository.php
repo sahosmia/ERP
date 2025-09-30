@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class SupplierRepository
 {
-    public function getAll(Request $request)
+    public function getAll($request)
     {
         $query = Supplier::query();
 
@@ -23,8 +23,12 @@ class SupplierRepository
             $query->where('country', 'like', '%' . $request->input('country') . '%');
         }
 
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('created_at', [$request->input('start_date'), $request->input('end_date')]);
+        if ($request->filled('start_date')) {
+            $query->where('created_at', '>=', $request->input('start_date'));
+        }
+
+        if ($request->filled('end_date')) {
+            $query->where('created_at', '<=', $request->input('end_date'));
         }
 
         return $query->paginate(10);
