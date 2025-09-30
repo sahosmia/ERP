@@ -22,6 +22,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
 
     // Fabric Routes
     Route::get('fabrics/trash', [FabricController::class, 'trash'])->name('fabrics.trash');
+    Route::get('fabrics/{fabric}/print-barcode', [FabricController::class, 'printBarcode'])->name('fabrics.print-barcode');
     Route::post('fabrics/{id}/restore', [FabricController::class, 'restore'])->name('fabrics.restore');
     Route::delete('fabrics/{id}/force-delete', [FabricController::class, 'forceDelete'])->name('fabrics.force-delete');
     Route::resource('fabrics', FabricController::class);
