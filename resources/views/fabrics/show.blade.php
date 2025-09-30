@@ -56,5 +56,40 @@
             </a>
         </div>
     </div>
+
+    <!-- Notes Section -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 class="text-xl font-semibold mb-4">Notes</h2>
+
+        <!-- Form to add a new note -->
+        <form action="{{ route('admin.notes.store') }}" method="POST" class="mb-6">
+            @csrf
+            <input type="hidden" name="notable_id" value="{{ $fabric->id }}">
+            <input type="hidden" name="notable_type" value="{{ get_class($fabric) }}">
+
+            <div class="mb-4">
+                <label for="note" class="block text-gray-700 text-sm font-bold mb-2">Add a new note:</label>
+                <textarea name="note" id="note" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required></textarea>
+            </div>
+
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Add Note
+            </button>
+        </form>
+
+        <!-- Display existing notes -->
+        <div class="space-y-4">
+            @forelse ($fabric->notes()->latest()->get() as $note)
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <p class="text-gray-800">{{ $note->note }}</p>
+                    <p class="text-xs text-gray-500 mt-2">
+                        Added by {{ $note->addedBy->name ?? 'Unknown' }} on {{ $note->created_at->format('M d, Y \a\t h:i A') }}
+                    </p>
+                </div>
+            @empty
+                <p class="text-gray-500">No notes have been added yet.</p>
+            @endforelse
+        </div>
+    </div>
 </div>
 @endsection

@@ -2,44 +2,46 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Fabric;
 use App\Models\Note;
 use App\Models\Supplier;
-use App\Models\Fabric;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Seeder;
 
 class NoteSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
-        if (Note::count() === 0 && User::count() > 0 && Supplier::count() > 0 && Fabric::count() > 0) {
-            $user = User::first();
-            $supplier = Supplier::first();
-            $fabric = Fabric::first();
+        $suppliers = Supplier::all();
+        $fabrics = Fabric::all();
+        $users = User::all();
 
-            DB::table('notes')->insert([
-                [
-                    'note' => 'This is a note for the first supplier.',
-                    'notable_id' => $supplier->id,
-                    'notable_type' => Supplier::class,
-                    'added_by' => $user->id,
-                    'updated_by' => null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'note' => 'This is a note for the first fabric.',
-                    'notable_id' => $fabric->id,
-                    'notable_type' => Fabric::class,
-                    'added_by' => $user->id,
-                    'updated_by' => null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]
+        if ($users->isEmpty()) {
+            $this->command->info('No users found, creating one first.');
+            User::factory()->create();
+            $users = User::all();
+        }
+
+        foreach ($suppliers as $supplier) {
+            Note::create([
+                'notable_id' => $supplier->id,
+                'notable_type' => Supplier::class,
+                'note' => 'This is a sample note for a supplier.',
+                'added_by' => $users->random()->id,
+            ]);
+        }
+
+        foreach ($fabrics as $fabric) {
+            Note::create([
+                'notable_id' => $fabric->id,
+                'notable_type' => Fabric::class,
+                'note' => 'This is a sample note for a fabric.',
+                'added_by' => $users->random()->id,
             ]);
         }
     }

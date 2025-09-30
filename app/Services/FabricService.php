@@ -25,22 +25,17 @@ class FabricService
     {
         // 'added_by' is handled by the Fabric model's boot method.
 
-        // The old barcode generation remains.
+        // Generate unique identifiers before creation to avoid a second save query.
         $data['barcode'] = 'fab-' . Str::uuid();
+        $data['barcode_no'] = 'FBR-' . strtoupper(Str::random(10));
 
         if ($imageFile) {
             $path = $imageFile->store('fabric_images', 'public');
             $data['image_path'] = $path;
         }
 
-        // Create the fabric record.
-        $fabric = $this->fabricRepository->create($data);
-
-        // Generate barcode_no and save it to the record.
-        $fabric->barcode_no = 'FBR-' . str_pad($fabric->id, 6, '0', STR_PAD_LEFT);
-        $fabric->save();
-
-        return $fabric;
+        // Create the fabric record in a single database call.
+        return $this->fabricRepository->create($data);
     }
 
     public function updateFabric(Fabric $fabric, array $data, $imageFile = null)
