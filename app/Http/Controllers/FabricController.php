@@ -7,6 +7,7 @@ use App\Models\Supplier;
 use App\Http\Requests\StoreFabricRequest;
 use App\Http\Requests\UpdateFabricRequest;
 use App\Services\FabricService;
+use Illuminate\Http\Request;
 
 class FabricController extends Controller
 {
@@ -74,5 +75,10 @@ class FabricController extends Controller
     {
         $this->fabricService->forceDeleteFabric($id);
         return redirect()->route('admin.fabrics.trash')->with('success', 'Fabric permanently deleted.');
+    }
+
+    public function printBarcode(Fabric $fabric)
+    {
+        return view('fabrics.print', compact('fabric'));
     }
 }

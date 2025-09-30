@@ -23,7 +23,9 @@ class FabricService
 
     public function createFabric(array $data, $imageFile = null)
     {
-        $data['added_by'] = Auth::id();
+        // 'added_by' is handled by the Fabric model's boot method.
+
+        // The old barcode generation remains.
         $data['barcode'] = 'fab-' . Str::uuid();
 
         if ($imageFile) {
@@ -31,12 +33,19 @@ class FabricService
             $data['image_path'] = $path;
         }
 
-        return $this->fabricRepository->create($data);
+        // Create the fabric record.
+        $fabric = $this->fabricRepository->create($data);
+
+        // Generate barcode_no and save it to the record.
+        $fabric->barcode_no = 'FBR-' . str_pad($fabric->id, 6, '0', STR_PAD_LEFT);
+        $fabric->save();
+
+        return $fabric;
     }
 
     public function updateFabric(Fabric $fabric, array $data, $imageFile = null)
     {
-        $data['updated_by'] = Auth::id();
+        // 'updated_by' is handled by the Fabric model's boot method.
 
         if ($imageFile) {
             if ($fabric->image_path) {

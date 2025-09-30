@@ -35,15 +35,18 @@
 
         <div class="mt-6">
             <h2 class="text-xl font-semibold mb-4">Barcode</h2>
-            <div class="flex items-center">
-                <p class="text-gray-700 mr-4"><strong>Barcode:</strong> {{ $fabric->barcode }}</p>
-                {{-- Barcode generation and printing would require a library and more complex setup --}}
-                {{-- For now, just displaying the code and a placeholder button --}}
-                <button onclick="window.print()"
-                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            @if ($fabric->barcode_no)
+                <div class="mb-4">
+                    {!! DNS1D::getBarcodeHTML($fabric->barcode_no, 'C39', 2, 60) !!}
+                    <p class="text-center text-lg mt-2">{{ $fabric->barcode_no }}</p>
+                </div>
+                <a href="{{ route('admin.fabrics.print-barcode', $fabric) }}" target="_blank"
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                     Print Barcode
-                </button>
-            </div>
+                </a>
+            @else
+                <p class="text-gray-700">No barcode generated for this fabric.</p>
+            @endif
         </div>
 
         <div class="mt-6">

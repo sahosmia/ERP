@@ -75,6 +75,7 @@
             <thead>
                 <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                     <th class="py-3 px-6 text-left">Fabric No</th>
+                    <th class="py-3 px-6 text-left">Barcode</th>
                     <th class="py-3 px-6 text-left">Composition</th>
                     <th class="py-3 px-6 text-center">GSM</th>
                     <th class="py-3 px-6 text-center">Supplier</th>
@@ -89,6 +90,14 @@
                         <div class="flex items-center">
                             <span class="font-medium">{{ $fabric->fabric_no }}</span>
                         </div>
+                    </td>
+                    <td class="py-3 px-6 text-left">
+                        @if($fabric->barcode_no)
+                            <div>{!! DNS1D::getBarcodeHTML($fabric->barcode_no, 'C39', 1, 33) !!}</div>
+                            <div class="text-xs">{{ $fabric->barcode_no }}</div>
+                        @else
+                            N/A
+                        @endif
                     </td>
                     <td class="py-3 px-6 text-left">
                         <div class="flex items-center">

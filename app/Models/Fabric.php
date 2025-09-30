@@ -30,6 +30,7 @@ class Fabric extends Model
         'fabric_selected_by',
         'image_path',
         'barcode',
+        'barcode_no',
         'supplier_id',
         'added_by',
         'updated_by',
