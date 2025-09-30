@@ -31,6 +31,15 @@ class FabricRepository
             $query->where('production_type', $request->input('production_type'));
         }
 
+        if ($request->filled('stock_status')) {
+            $stockStatus = $request->input('stock_status');
+            if ($stockStatus === 'in_stock') {
+                $query->havingRaw('(COALESCE(stock_in, 0) - COALESCE(stock_out, 0)) > 0');
+            } elseif ($stockStatus === 'out_of_stock') {
+                $query->havingRaw('(COALESCE(stock_in, 0) - COALESCE(stock_out, 0)) <= 0');
+            }
+        }
+
         return $query->paginate(10);
     }
 

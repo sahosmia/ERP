@@ -22,7 +22,7 @@
         <summary class="font-semibold p-4 cursor-pointer">Advanced Search</summary>
         <div class="p-4 border-t">
             <form id="search-form" method="GET" action="{{ route('admin.fabrics.index') }}" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div>
                         <label for="company_name" class="block text-sm font-medium text-gray-700">Company/Factory
                             Name</label>
@@ -53,6 +53,18 @@
                                 Woven</option>
                             <option value="non_woven" {{ request('production_type') == 'non_woven' ? 'selected' : '' }}>
                                 Non-Woven</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="stock_status" class="block text-sm font-medium text-gray-700">Stock
+                            Status</label>
+                        <select name="stock_status" id="stock_status"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <option value="">All</option>
+                            <option value="in_stock" {{ request('stock_status') == 'in_stock' ? 'selected' : '' }}>In Stock
+                            </option>
+                            <option value="out_of_stock"
+                                {{ request('stock_status') == 'out_of_stock' ? 'selected' : '' }}>Out of Stock</option>
                         </select>
                     </div>
                 </div>
