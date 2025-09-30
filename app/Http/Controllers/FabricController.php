@@ -21,6 +21,16 @@ class FabricController extends Controller
     public function index(Request $request)
     {
         $fabrics = $this->fabricService->getAllFabrics($request);
+
+        if ($request->expectsJson()) {
+            $fabrics->withPath(route('api.fabrics.index'));
+
+            return response()->json([
+                'data' => $fabrics->items(),
+                'links_html' => $fabrics->links()->toHtml(),
+            ]);
+        }
+
         return view('fabrics.index', compact('fabrics'));
     }
 

@@ -21,7 +21,7 @@
     <details class="bg-white shadow rounded-lg mb-4">
         <summary class="font-semibold p-4 cursor-pointer">Advanced Search</summary>
         <div class="p-4 border-t">
-            <form method="GET" action="{{ route('admin.fabrics.index') }}" class="space-y-4">
+            <form id="search-form" method="GET" action="{{ route('admin.fabrics.index') }}" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                         <label for="company_name" class="block text-sm font-medium text-gray-700">Company/Factory
@@ -83,7 +83,7 @@
                     <th class="py-3 px-6 text-center">Actions</th>
                 </tr>
             </thead>
-            <tbody class="text-gray-600 text-sm font-light">
+            <tbody id="fabrics-table-body" class="text-gray-600 text-sm font-light">
                 @foreach ($fabrics as $fabric)
                 <tr class="border-b border-gray-200 hover:bg-gray-100">
                     <td class="py-3 px-6 text-left whitespace-nowrap">
@@ -141,6 +141,105 @@
             </tbody>
         </table>
     </div>
-    {{ $fabrics->links() }}
+    <div id="pagination-links">
+        {{ $fabrics->links() }}
+    </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('search-form');
+
+    const updateTable = (data) => {
+        const tableBody = document.getElementById('fabrics-table-body');
+        const paginationLinks = document.getElementById('pagination-links');
+        tableBody.innerHTML = '';
+
+        if (data.data && data.data.length > 0) {
+            data.data.forEach(fabric => {
+                const barcodeHtml = fabric.barcode_no ? `<div>${fabric.barcode_no}</div>` : 'N/A';
+                const supplierName = fabric.supplier ? fabric.supplier.company_name : 'N/A';
+                const stockBalance = (fabric.stock_in || 0) - (fabric.stock_out || 0);
+
+                const showUrl = `{{ url('admin/fabrics') }}/${fabric.id}`;
+                const editUrl = `{{ url('admin/fabrics') }}/${fabric.id}/edit`;
+                const destroyUrl = `{{ url('admin/fabrics') }}/${fabric.id}`;
+
+                const row = `
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6 text-left whitespace-nowrap"><div class="flex items-center"><span class="font-medium">${fabric.fabric_no}</span></div></td>
+                        <td class="py-3 px-6 text-left">${barcodeHtml}</td>
+                        <td class="py-3 px-6 text-left"><div class="flex items-center"><span>${fabric.composition}</span></div></td>
+                        <td class="py-3 px-6 text-center"><span>${fabric.gsm}</span></td>
+                        <td class="py-3 px-6 text-center"><span class="bg-purple-200 text-purple-600 py-1 px-3 rounded-full text-xs">${supplierName}</span></td>
+                        <td class="py-3 px-6 text-center"><span>${stockBalance}</span></td>
+                        <td class="py-3 px-6 text-center">
+                            <div class="flex item-center justify-center">
+                                <a href="${showUrl}" class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center mr-2 transform hover:scale-110"><i class="fas fa-eye"></i></a>
+                                <a href="${editUrl}" class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center mr-2 transform hover:scale-110"><i class="fas fa-pencil-alt"></i></a>
+                                <form action="${destroyUrl}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to move this fabric to trash?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center transform hover:scale-110"><i class="fas fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>`;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        } else {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4">No fabrics found.</td></tr>';
+        }
+
+        if (data.links_html) {
+            paginationLinks.innerHTML = data.links_html;
+        } else {
+            paginationLinks.innerHTML = '';
+        }
+    };
+
+    const fetchData = (url) => {
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            updateTable(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const tableBody = document.getElementById('fabrics-table-body');
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-red-500">An error occurred while fetching data.</td></tr>';
+        });
+    };
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData);
+        const url = `{{ route('api.fabrics.index') }}?${params.toString()}`;
+        fetchData(url);
+    });
+
+    document.getElementById('pagination-links').addEventListener('click', function (e) {
+        const anchor = e.target.closest('a');
+        if (anchor) {
+            e.preventDefault();
+            const url = anchor.href;
+            if (!url) return;
+            fetchData(url);
+        }
+    });
+});
+</script>
+@endpush

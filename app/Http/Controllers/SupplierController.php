@@ -20,6 +20,16 @@ class SupplierController extends Controller
     public function index(Request $request)
     {
         $suppliers = $this->supplierService->getSuppliers($request);
+
+        if ($request->expectsJson()) {
+            $suppliers->withPath(route('api.suppliers.index'));
+
+            return response()->json([
+                'data' => $suppliers->items(),
+                'links_html' => $suppliers->links()->toHtml(),
+            ]);
+        }
+
         return view('suppliers.index', compact('suppliers'));
     }
 
