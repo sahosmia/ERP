@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tableBody = document.getElementById('fabrics-table-body');
     const paginationLinks = document.getElementById('pagination-links');
     const clearButton = document.getElementById('clear-button');
-    const API_ENDPOINT = '{{ route('api.fabrics.index') }}';
+    const API_ENDPOINT = "{{ route('api.fabrics.index') }}";
 
     const renderTableRows = (fabrics) => {
         tableBody.innerHTML = '';

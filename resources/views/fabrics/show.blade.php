@@ -15,7 +15,7 @@
                 <p class="text-gray-700 mb-2"><strong>Fabric No:</strong> {{ $fabric->fabric_no }}</p>
                 <p class="text-gray-700 mb-2"><strong>Composition:</strong> {{ $fabric->composition }}</p>
                 <p class="text-gray-700 mb-2"><strong>GSM:</strong> {{ $fabric->gsm }}</p>
-                <p class="text-gray-700 mb-2"><strong>Quantity:</strong> {{ $fabric->qty }}</p>
+                <p class="text-gray-700 mb-2"><strong>Quantity:</strong> {{ $fabric->balance }}</p>
                 <p class="text-gray-700 mb-2"><strong>Cuttable Width:</strong> {{ $fabric->cuttable_width }}</p>
                 <p class="text-gray-700 mb-2"><strong>Production Type:</strong> {{ $fabric->production_type }}</p>
                 <p class="text-gray-700 mb-2"><strong>Supplier:</strong>
@@ -54,12 +54,7 @@
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Back to List
             </a>
-<<<<<<< HEAD
-
-             <a href="{{ route('admin.fabrics.stocks', $fabric) }}"
-=======
             <a href="{{ route('admin.fabrics.stocks.index', $fabric) }}"
->>>>>>> 61f1514686cfca3fe4033e56e77a8d7a9351d40a
                 class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
                 View Stocks
             </a>
