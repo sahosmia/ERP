@@ -25,12 +25,7 @@ class FabricApiController extends Controller
     public function index(Request $request)
     {
         $fabrics = $this->fabricService->getAllFabrics($request);
-        $fabrics->withPath(route('api.fabrics.index'));
-
-        return response()->json([
-            'data' => $fabrics->items(),
-            'links_html' => $fabrics->links()->toHtml(),
-        ]);
+        return FabricResource::collection($fabrics);
     }
 
     /**
@@ -64,7 +59,7 @@ class FabricApiController extends Controller
      */
     public function destroy(Fabric $fabric)
     {
-        $fabric->delete();
+        $this->fabricService->deleteFabric($fabric);
         return response()->noContent();
     }
 }
