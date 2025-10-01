@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin/')->name('admin.')->group
     Route::post('fabrics/{id}/restore', [FabricController::class, 'restore'])->name('fabrics.restore');
     Route::delete('fabrics/{id}/force-delete', [FabricController::class, 'forceDelete'])->name('fabrics.force-delete');
     Route::resource('fabrics', FabricController::class);
+    Route::resource('fabrics.stocks', FabricStockController::class)->except(['show', 'edit', 'update']);
 
 
         Route::resource('fabrics.stocks', FabricStockController::class)->except(['show', 'edit', 'update']);

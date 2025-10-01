@@ -163,6 +163,16 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('search-form');
+    const inputs = form.querySelectorAll('input, select');
+
+    const debounce = (func, delay) => {
+        let timeout;
+        return function(...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), delay);
+        };
+    };
 
     const updateTable = (data) => {
         const tableBody = document.getElementById('fabrics-table-body');
@@ -171,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (data.data && data.data.length > 0) {
             data.data.forEach(fabric => {
-                const barcodeHtml = fabric.barcode_no ? `<div>${fabric.barcode_no}</div>` : 'N/A';
+                const barcodeHtml = fabric.barcode_no ? `${fabric.barcode_no}` : 'N/A';
                 const supplierName = fabric.supplier ? fabric.supplier.company_name : 'N/A';
                 const stockBalance = (fabric.stock_in || 0) - (fabric.stock_out || 0);
 
@@ -227,6 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             updateTable(data);
+            window.history.pushState({path:url},'',url);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -235,12 +246,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
+    const handleFormInput = () => {
         const formData = new FormData(form);
         const params = new URLSearchParams(formData);
         const url = `{{ route('api.fabrics.index') }}?${params.toString()}`;
         fetchData(url);
+    }
+
+    const debouncedFetch = debounce(handleFormInput, 300);
+
+    inputs.forEach(input => {
+        if (input.tagName === 'SELECT') {
+            input.addEventListener('change', handleFormInput);
+        } else {
+            input.addEventListener('keyup', debouncedFetch);
+        }
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        handleFormInput();
     });
 
     document.getElementById('pagination-links').addEventListener('click', function (e) {
@@ -250,6 +275,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const url = anchor.href;
             if (!url) return;
             fetchData(url);
+        }
+    });
+
+    window.addEventListener('popstate', function(event) {
+        if (event.state && event.state.path) {
+            fetchData(event.state.path);
+        } else {
+            fetchData(location.href);
         }
     });
 });

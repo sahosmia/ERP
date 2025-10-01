@@ -10,10 +10,12 @@ use Illuminate\Support\Str;
 class FabricService
 {
     protected $fabricRepository;
+    protected $fabricStockService;
 
-    public function __construct(FabricRepository $fabricRepository)
+    public function __construct(FabricRepository $fabricRepository, FabricStockService $fabricStockService)
     {
         $this->fabricRepository = $fabricRepository;
+        $this->fabricStockService = $fabricStockService;
     }
 
     public function getAllFabrics($request)
@@ -35,7 +37,16 @@ class FabricService
         }
 
         // Create the fabric record in a single database call.
-        return $this->fabricRepository->create($data);
+        $fabric = $this->fabricRepository->create($data);
+
+        // Create the initial stock transaction.
+        $this->fabricStockService->createStockTransaction($fabric, [
+            'transaction_type' => 'in',
+            'qty' => $fabric->qty,
+            'remarks' => 'Initial stock',
+        ]);
+
+        return $fabric;
     }
 
     public function updateFabric(Fabric $fabric, array $data, $imageFile = null)

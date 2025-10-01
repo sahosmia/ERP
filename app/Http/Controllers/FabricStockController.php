@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Fabric;
 use App\Models\FabricStock;
+use App\Services\FabricStockService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class FabricStockController extends Controller
 {
+    protected $fabricStockService;
+
+    public function __construct(FabricStockService $fabricStockService)
+    {
+        $this->fabricStockService = $fabricStockService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -47,19 +55,11 @@ class FabricStockController extends Controller
             'remarks' => 'nullable|string',
         ]);
 
-        $balance = $fabric->balance;
-
-        if ($request->transaction_type === 'out' && $request->qty > $balance) {
-            return back()->withErrors(['qty' => 'The quantity to issue cannot exceed the available balance.']);
+        try {
+            $this->fabricStockService->createStockTransaction($fabric, $request->all());
+        } catch (\Exception $e) {
+            return back()->withErrors(['qty' => $e->getMessage()]);
         }
-
-        FabricStock::create([
-            'fabric_id' => $fabric->id,
-            'transaction_type' => $request->transaction_type,
-            'qty' => $request->qty,
-            'barcode' => 'TXN-' . strtoupper(Str::random(10)),
-            'remarks' => $request->remarks,
-        ]);
 
         return redirect()->route('admin.fabrics.stocks.index', $fabric)->with('success', 'Stock transaction recorded successfully.');
     }

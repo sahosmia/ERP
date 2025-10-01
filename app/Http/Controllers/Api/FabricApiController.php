@@ -24,27 +24,13 @@ class FabricApiController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Fabric::with('supplier');
+        $fabrics = $this->fabricService->getAllFabrics($request);
+        $fabrics->withPath(route('api.fabrics.index'));
 
-        if ($request->filled('fabric_no')) {
-            $query->where('fabric_no', 'like', '%' . $request->input('fabric_no') . '%');
-        }
-
-        if ($request->filled('composition')) {
-            $query->where('composition', 'like', '%' . $request->input('composition') . '%');
-        }
-
-        if ($request->filled('production_type')) {
-            $query->where('production_type', $request->input('production_type'));
-        }
-
-        if ($request->filled('company_name')) {
-            $query->whereHas('supplier', function ($q) use ($request) {
-                $q->where('company_name', 'like', '%' . $request->input('company_name') . '%');
-            });
-        }
-
-        return FabricResource::collection($query->paginate(10));
+        return response()->json([
+            'data' => $fabrics->items(),
+            'links_html' => $fabrics->links()->toHtml(),
+        ]);
     }
 
     /**

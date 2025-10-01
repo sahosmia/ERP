@@ -54,8 +54,12 @@
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Back to List
             </a>
+<<<<<<< HEAD
 
              <a href="{{ route('admin.fabrics.stocks', $fabric) }}"
+=======
+            <a href="{{ route('admin.fabrics.stocks.index', $fabric) }}"
+>>>>>>> 61f1514686cfca3fe4033e56e77a8d7a9351d40a
                 class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
                 View Stocks
             </a>
