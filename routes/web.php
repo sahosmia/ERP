@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\FabricController;
+use App\Http\Controllers\FabricStockController;
 use App\Http\Controllers\NoteController;
 
 Route::get('/', function () {
@@ -24,9 +25,16 @@ Route::middleware(['auth', 'verified'])->prefix('admin/')->name('admin.')->group
     // Fabric Routes
     Route::get('fabrics/trash', [FabricController::class, 'trash'])->name('fabrics.trash');
     Route::get('fabrics/{fabric}/print-barcode', [FabricController::class, 'printBarcode'])->name('fabrics.print-barcode');
+// Route::get('fabrics/{fabric}/stocks', [FabricController::class, 'showStocks'])->name('fabrics.stocks');
+//     Route::get('fabrics/{fabric}/stocks/create', [FabricController::class, 'createStock'])->name('fabrics.stocks.create');
+//     Route::post('fabrics/{fabric}/stocks', [FabricController::class, 'storeStock'])->name('fabrics.stocks.store');
     Route::post('fabrics/{id}/restore', [FabricController::class, 'restore'])->name('fabrics.restore');
     Route::delete('fabrics/{id}/force-delete', [FabricController::class, 'forceDelete'])->name('fabrics.force-delete');
     Route::resource('fabrics', FabricController::class);
+
+
+        Route::resource('fabrics.stocks', FabricStockController::class)->except(['show', 'edit', 'update']);
+
 
     // Supplier Routes
     Route::get('suppliers/trash', [SupplierController::class, 'trash'])->name('suppliers.trash');
@@ -36,6 +44,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin/')->name('admin.')->group
 
     // Notes Route
     Route::post('notes', [NoteController::class, 'store'])->name('notes.store');
+
+
+
 });
 
 require __DIR__.'/auth.php';

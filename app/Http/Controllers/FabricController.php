@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Fabric;
 use App\Models\Supplier;
 use App\Http\Requests\StoreFabricRequest;
+use App\Http\Requests\StoreFabricStockRequest;
 use App\Http\Requests\UpdateFabricRequest;
 use App\Services\FabricService;
 use Illuminate\Http\Request;
@@ -91,4 +92,25 @@ class FabricController extends Controller
     {
         return view('fabrics.print', compact('fabric'));
     }
+
+
+
+
+    // public function showStocks(Fabric $fabric)
+    // {
+    //     $stocks = $fabric->stocks()->paginate(10);
+    //     return view('fabric-stocks.index', compact('fabric', 'stocks'));
+    // }
+
+    // public function createStock(Fabric $fabric)
+    // {
+    //     return view('fabric-stocks.create', compact('fabric'));
+    // }
+
+    // public function storeStock(StoreFabricStockRequest $request, Fabric $fabric)
+    // {
+    //     $fabric->stocks()->create($request->validated());
+
+    //     return redirect()->route('admin.fabrics.stocks.index', $fabric)->with('success', 'Stock added successfully.');
+    // }
 }

@@ -28,7 +28,7 @@
                 @if ($fabric->image_path)
                 <h2 class="text-xl font-semibold mb-4">Fabric Image</h2>
                 <img src="{{ asset('storage/' . $fabric->image_path) }}" alt="Fabric Image"
-                    class="w-full h-auto object-cover rounded shadow-lg">
+                    class="w-full h-auto max-w-32 max-h-32 object-cover rounded shadow-lg">
                 @endif
             </div>
         </div>
@@ -53,6 +53,11 @@
             <a href="{{ route('admin.fabrics.index') }}"
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Back to List
+            </a>
+
+             <a href="{{ route('admin.fabrics.stocks', $fabric) }}"
+                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
+                View Stocks
             </a>
         </div>
     </div>

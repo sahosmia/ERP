@@ -3,7 +3,7 @@
 @section('title', 'View Supplier')
 
 @section('header')
-<h1 class="text-2xl font-semibold">Supplier Details</h1>
+<h2 class="text-2xl font-semibold">Supplier Details</h2>
 @endsection
 
 @section('content')

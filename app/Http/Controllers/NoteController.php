@@ -16,9 +16,10 @@ class NoteController extends Controller
      */
     public function store(StoreNoteRequest $request)
     {
+
         $validated = $request->validated();
 
-        $notableType = 'App\\Models\\' . $validated['notable_type'];
+        $notableType =  $validated['notable_type'];
 
         if (!class_exists($notableType)) {
             return back()->with('error', 'Invalid notable type provided.');
@@ -29,6 +30,7 @@ class NoteController extends Controller
         if (!$notable) {
             return back()->with('error', 'The associated record could not be found.');
         }
+        // return $notable;
 
         $note = new Note();
         $note->note = $validated['note'];
