@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Fabric;
 use App\Models\FabricStock;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreFabricStockRequest;
 use Illuminate\Support\Str;
 
 class FabricStockController extends Controller
@@ -39,27 +39,22 @@ class FabricStockController extends Controller
      * @param  \App\Models\Fabric  $fabric
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Fabric $fabric)
+    public function store(StoreFabricStockRequest $request, Fabric $fabric)
     {
-        $request->validate([
-            'transaction_type' => 'required|in:in,out',
-            'qty' => 'required|numeric|min:0.01',
-            'remarks' => 'nullable|string',
-        ]);
-
+        $validated = $request->validated();
         $balance = $fabric->balance;
 
-        if ($request->transaction_type === 'out' && $request->qty > $balance) {
-            return back()->withErrors(['qty' => 'The quantity to issue cannot exceed the available balance.']);
+        if ($validated['transaction_type'] === 'out' && $validated['qty'] > $balance) {
+            return back()->withErrors(['qty' => 'The quantity to issue cannot exceed the available balance.'])->withInput();
         }
 
-        FabricStock::create([
-            'fabric_id' => $fabric->id,
-            'transaction_type' => $request->transaction_type,
-            'qty' => $request->qty,
-            'barcode' => 'TXN-' . strtoupper(Str::random(10)),
-            'remarks' => $request->remarks,
-        ]);
+        $data = $validated;
+        $data['fabric_id'] = $fabric->id;
+        if (empty($validated['barcode'])) {
+            $data['barcode'] = 'TXN-' . strtoupper(Str::random(10));
+        }
+
+        FabricStock::create($data);
 
         return redirect()->route('admin.fabrics.stocks.index', $fabric)->with('success', 'Stock transaction recorded successfully.');
     }
