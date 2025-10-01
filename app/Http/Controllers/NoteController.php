@@ -2,35 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Note;
-use App\Models\Supplier;
-use App\Models\Fabric;
+use App\Http\Requests\StoreNoteRequest;
+use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
 {
     /**
-     * Store a newly created note in storage.
+     * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\StoreNoteRequest  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreNoteRequest $request)
     {
-        $request->validate([
-            'note' => 'required|string',
-            'notable_id' => 'required|integer',
-            'notable_type' => 'required|string|in:App\Models\Supplier,App\Models\Fabric',
-        ]);
+        $validated = $request->validated();
 
-        $model = $request->notable_type::findOrFail($request->notable_id);
+        $notableType = 'App\\Models\\' . $validated['notable_type'];
 
-        $note = new Note([
-            'note' => $request->note,
-            'added_by' => auth()->id(),
-        ]);
+        if (!class_exists($notableType)) {
+            return back()->with('error', 'Invalid notable type provided.');
+        }
 
-        $model->notes()->save($note);
+        $notable = $notableType::find($validated['notable_id']);
+
+        if (!$notable) {
+            return back()->with('error', 'The associated record could not be found.');
+        }
+
+        $note = new Note();
+        $note->note = $validated['note'];
+        $note->notable_id = $notable->id;
+        $note->notable_type = $notableType;
+        $note->added_by = Auth::id();
+        $note->save();
 
         return back()->with('success', 'Note added successfully.');
     }
