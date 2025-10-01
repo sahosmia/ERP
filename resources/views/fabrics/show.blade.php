@@ -54,6 +54,10 @@
                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Back to List
             </a>
+            <a href="{{ route('admin.fabrics.stocks.index', $fabric) }}"
+                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2">
+                View Stocks
+            </a>
         </div>
     </div>
 

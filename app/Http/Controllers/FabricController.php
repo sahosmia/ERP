@@ -91,4 +91,5 @@ class FabricController extends Controller
     {
         return view('fabrics.print', compact('fabric'));
     }
+
 }
