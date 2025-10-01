@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\FabricController;
+use App\Http\Controllers\NoteController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,6 +33,9 @@ Route::middleware(['auth', 'verified'])->prefix('admin/')->name('admin.')->group
     Route::post('suppliers/{id}/restore', [SupplierController::class, 'restore'])->name('suppliers.restore');
     Route::delete('suppliers/{id}/force-delete', [SupplierController::class, 'forceDelete'])->name('suppliers.force-delete');
     Route::resource('suppliers', SupplierController::class);
+
+    // Notes Route
+    Route::post('notes', [NoteController::class, 'store'])->name('notes.store');
 });
 
 require __DIR__.'/auth.php';
