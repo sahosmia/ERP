@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\FabricController;
+use App\Http\Controllers\FabricStockController;
 use App\Http\Controllers\NoteController;
 
 Route::get('/', function () {
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin/')->name('admin.')->group
     Route::post('fabrics/{id}/restore', [FabricController::class, 'restore'])->name('fabrics.restore');
     Route::delete('fabrics/{id}/force-delete', [FabricController::class, 'forceDelete'])->name('fabrics.force-delete');
     Route::resource('fabrics', FabricController::class);
+    Route::resource('fabrics.stocks', FabricStockController::class)->except(['show', 'edit', 'update']);
 
     // Supplier Routes
     Route::get('suppliers/trash', [SupplierController::class, 'trash'])->name('suppliers.trash');
