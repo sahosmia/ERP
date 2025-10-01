@@ -20,6 +20,11 @@ class SupplierService
         return $this->supplierRepository->getAll($request);
     }
 
+    public function getSupplierById($id)
+    {
+        return $this->supplierRepository->find($id);
+    }
+
     public function createSupplier(array $data)
     {
         $data['added_by'] = Auth::id();

@@ -34,6 +34,11 @@ class SupplierRepository
         return $query->paginate(10);
     }
 
+    public function find($id)
+    {
+        return Supplier::findOrFail($id);
+    }
+
     public function create(array $data)
     {
         return Supplier::create($data);

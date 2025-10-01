@@ -8,37 +8,24 @@ use App\Models\Supplier;
 use App\Http\Requests\StoreSupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
 use Illuminate\Http\Request;
+use App\Services\SupplierService;
 
 class SupplierApiController extends Controller
 {
+    protected $supplierService;
+
+    public function __construct(SupplierService $supplierService)
+    {
+        $this->supplierService = $supplierService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $query = Supplier::query();
-
-        if ($request->filled('company_name')) {
-            $query->where('company_name', 'like', '%' . $request->input('company_name') . '%');
-        }
-
-        if ($request->filled('country')) {
-            $query->where('country', 'like', '%' . $request->input('country') . '%');
-        }
-
-        if ($request->filled('representative_name')) {
-            $query->where('representative_name', 'like', '%' . $request->input('representative_name') . '%');
-        }
-
-        if ($request->filled('start_date')) {
-            $query->whereDate('created_at', '>=', $request->input('start_date'));
-        }
-
-        if ($request->filled('end_date')) {
-            $query->whereDate('created_at', '<=', $request->input('end_date'));
-        }
-
-        return SupplierResource::collection($query->paginate(10));
+        $suppliers = $this->supplierService->getSuppliers($request);
+        return SupplierResource::collection($suppliers);
     }
 
     /**
@@ -46,15 +33,16 @@ class SupplierApiController extends Controller
      */
     public function store(StoreSupplierRequest $request)
     {
-        $supplier = Supplier::create($request->validated());
+        $supplier = $this->supplierService->createSupplier($request->validated());
         return new SupplierResource($supplier);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Supplier $supplier)
+    public function show($id)
     {
+        $supplier = $this->supplierService->getSupplierById($id);
         return new SupplierResource($supplier);
     }
 
@@ -63,8 +51,8 @@ class SupplierApiController extends Controller
      */
     public function update(UpdateSupplierRequest $request, Supplier $supplier)
     {
-        $supplier->update($request->validated());
-        return new SupplierResource($supplier);
+        $updatedSupplier = $this->supplierService->updateSupplier($supplier, $request->validated());
+        return new SupplierResource($updatedSupplier);
     }
 
     /**
@@ -72,7 +60,7 @@ class SupplierApiController extends Controller
      */
     public function destroy(Supplier $supplier)
     {
-        $supplier->delete();
+        $this->supplierService->deleteSupplier($supplier);
         return response()->noContent();
     }
 }

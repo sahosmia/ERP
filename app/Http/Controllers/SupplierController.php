@@ -19,18 +19,9 @@ class SupplierController extends Controller
 
     public function index(Request $request)
     {
-        $suppliers = $this->supplierService->getSuppliers($request);
-
-        if ($request->expectsJson()) {
-            $suppliers->withPath(route('api.suppliers.index'));
-
-            return response()->json([
-                'data' => $suppliers->items(),
-                'links_html' => $suppliers->links()->toHtml(),
-            ]);
-        }
-
-        return view('suppliers.index', compact('suppliers'));
+        // The view now handles data fetching via an API call,
+        // so we just need to return the blade shell.
+        return view('suppliers.index');
     }
 
     public function create()
